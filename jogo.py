@@ -12,25 +12,28 @@ white = (255, 255, 255)
 pygame.display.set_caption("FutImed - felix")
 icone = pygame.image.load("assets/bola.png")
 pygame.display.set_icon(icone)
-ironMan = pygame.image.load("assets/jogador.png")
-larguraIronMan = 120
+jogador = pygame.image.load("assets/jogador.png")
+largurajogador = 80
 fundo = pygame.image.load("assets/estadio.png")
-missel = pygame.image.load("assets/cartao.png")
+cartao = pygame.image.load("assets/cartao.png")
 juiz = pygame.image.load("assets/cartao-vermelho.png")
-explosaoSound = pygame.mixer.Sound("assets/apito.mp3")
+apitoSound = pygame.mixer.Sound("assets/apito.mp3")
+cartaovPosicaoX = largura*0.40
+cartaovPosicaoY = altura*0.81
 
-explosaoSound.set_volume(0.2)
+
+apitoSound.set_volume(0.2)
 def mostraVermelho(x, y):
     gameDisplay.blit(juiz,(x,y))
-def mostraIron(x, y):
-    gameDisplay.blit(ironMan, (x, y))
-def mostraMissel(x, y):
-    gameDisplay.blit(missel, (x, y))
+def mostraJogador(x, y):
+    gameDisplay.blit(jogador, (x, y))
+def mostracartao(x, y):
+    gameDisplay.blit(cartao, (x, y))
 def text_objects(texto, font):
     textSurface = font.render(texto, True, white)
     return textSurface, textSurface.get_rect()
 def escreverTela(texto):
-    fonte = pygame.font.Font("freesansbold.ttf", 90)
+    fonte = pygame.font.Font("freesansbold.ttf", 50)
     TextSurf, TextRect = text_objects(texto, fonte)
     TextRect.center = ((largura/2, altura/2))
     gameDisplay.blit(TextSurf, TextRect)
@@ -39,28 +42,33 @@ def escreverTela(texto):
     game()
 def escreverPlacar(contador):
     fonte = pygame.font.SysFont(None, 30)
-    texto = fonte.render("Cartões: "+str(contador), True, white)
+    texto = fonte.render("Pontos: "+str(contador), True, white)
     gameDisplay.blit(texto, (10, 10))
 def dead():
-    pygame.mixer.Sound.play(explosaoSound)
+    pygame.mixer.Sound.play(apitoSound)
     pygame.mixer.music.stop()
     escreverTela("Você foi expulso!")
+
+    
+    
+    
    
 
 def game():
     pygame.mixer.music.load("assets/futebol_som.mp3")
     pygame.mixer.music.set_volume(0.2)
     pygame.mixer.music.play(-1)
-    ironPosicaoX = largura*0.40
-    ironPosicaoY = altura*0.8
+    jogadorPosicaoX = largura*0.40
+    jogadorPosicaoY = altura*0.81
     movimentoX = 0
     velocidade = 10
-    misselAltura = 200
-    misselLargura = 300
-    misselVelocidade = 3
-    misselX = random.randrange(0, largura)
-    misselY = -200
+    cartaoAltura = 86
+    cartaoLargura = 85
+    cartaoVelocidade = 2
+    cartaoX = random.randrange(0, largura)
+    cartaoY = -200
     desvios = 0
+    
     
     while True:
         # pega as ações da tela. Ex.: fechar, click de uma tecla ou do mouse
@@ -83,26 +91,26 @@ def game():
         gameDisplay.blit(fundo, (0, 0))
         # definindo o fundo do game]
         escreverPlacar(desvios)
-        misselY = misselY + misselVelocidade
-        mostraMissel(misselX, misselY)
-        if misselY > altura:
-            misselY = -200
-            misselX = random.randrange(0, largura)
+        cartaoY = cartaoY + cartaoVelocidade
+        mostracartao(cartaoX, cartaoY)
+        if cartaoY > altura:
+            cartaoY = -200
+            cartaoX = random.randrange(0, largura)
             desvios = desvios+1
-            misselVelocidade += 3
+            cartaoVelocidade += 1
 
-        ironPosicaoX += movimentoX
-        if ironPosicaoX < 0:
-            ironPosicaoX = 0
-        elif ironPosicaoX > largura-larguraIronMan:
-            ironPosicaoX = largura-larguraIronMan
-        # analise de colisão com o IronMan
-        if ironPosicaoY < misselY + misselAltura:
-            if ironPosicaoX < misselX and ironPosicaoX+larguraIronMan > misselX or misselX+misselLargura > ironPosicaoX and misselX+misselLargura < ironPosicaoX+larguraIronMan:
+        jogadorPosicaoX += movimentoX
+        if jogadorPosicaoX < 0:
+            jogadorPosicaoX = 0
+        elif jogadorPosicaoX > largura-largurajogador:
+            jogadorPosicaoX = largura-largurajogador
+        # analise de colisão com o jogador
+        if jogadorPosicaoY < cartaoY + cartaoAltura:
+            if jogadorPosicaoX < cartaoX and jogadorPosicaoX+largurajogador > cartaoX or cartaoX+cartaoLargura > jogadorPosicaoX and cartaoX+cartaoLargura < jogadorPosicaoX+largurajogador:
                 dead()
                 
-        # analise de colisão com o IronMan
-        mostraIron(ironPosicaoX, ironPosicaoY)
+        # analise de colisão com o jogador
+        mostraJogador(jogadorPosicaoX, jogadorPosicaoY)
         pygame.display.update()
         clock.tick(60)  # faz com que o while execute 60x por segundo
 game()
