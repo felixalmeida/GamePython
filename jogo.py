@@ -20,13 +20,13 @@ juiz = pygame.image.load("assets/cartao-vermelho.png")
 apitoSound = pygame.mixer.Sound("assets/apito.mp3")
 cartaovPosicaoX = largura*0.40
 cartaovPosicaoY = altura*0.81
+vermelhoPosicaoX = largura*0.54
+vermelhoPosicaoY = altura/1.7
 
 
 apitoSound.set_volume(0.2)
 def mostraVermelho(x, y):
     gameDisplay.blit(juiz,(x,y))
-    pygame.display.update(juiz(x,y))
-    dead()
 def mostraJogador(x, y):
     gameDisplay.blit(jogador, (x, y))
 def mostracartao(x, y):
@@ -47,26 +47,31 @@ def escreverPlacar(contador):
     texto = fonte.render("Pontos: "+str(contador), True, white)
     gameDisplay.blit(texto, (10, 10))
 def dead():
+    mostraVermelho(vermelhoPosicaoX, vermelhoPosicaoY)
+    pygame.display.update()
     pygame.mixer.Sound.play(apitoSound)
     pygame.mixer.music.stop()
     escreverTela("Você foi expulso!")
-     
+       
 def game():
     pygame.mixer.music.load("assets/futebol_som.mp3")
     pygame.mixer.music.set_volume(0.2)
     pygame.mixer.music.play(-1)
     jogadorPosicaoX = largura*0.40
     jogadorPosicaoY = altura*0.81
+    
+
     movimentoX = 0
     velocidade = 10
     cartaoAltura = 86
-    cartaoLargura = 85
-    cartaoVelocidade = 2
+    cartaoLargura = 65
+    cartaoVelocidade = 3
     cartaoX = random.randrange(0, largura)
     cartaoY = -200
     desvios = 0
     
     while True:
+        
         # pega as ações da tela. Ex.: fechar, click de uma tecla ou do mouse
         acoes = pygame.event.get()  # devolve uma lista de ações
         keys = pygame.key.get_pressed()                  
@@ -74,6 +79,7 @@ def game():
             jogadorPosicaoX -= velocidade          
         if keys[pygame.K_RIGHT] and jogadorPosicaoX < 1400 - velocidade - jogadorPosicaoX:               
             jogadorPosicaoX += velocidade
+
         # [ini] mapeando as ações
         for acao in acoes:
             if acao.type == pygame.QUIT:
@@ -87,10 +93,12 @@ def game():
             if acao.type == pygame.KEYUP:
                 movimentoX = 0
         # [end] mapeando as ações
+
         # definindo o fundo do game
         gameDisplay.fill(white)
         gameDisplay.blit(fundo, (0, 0))
         # definindo o fundo do game]
+
         escreverPlacar(desvios)
         cartaoY = cartaoY + cartaoVelocidade
         mostracartao(cartaoX, cartaoY)
@@ -105,13 +113,13 @@ def game():
             jogadorPosicaoX = 0
         elif jogadorPosicaoX > largura-largurajogador:
             jogadorPosicaoX = largura-largurajogador
+
         # analise de colisão com o jogador
         if jogadorPosicaoY < cartaoY + cartaoAltura:
+            
             if jogadorPosicaoX < cartaoX and jogadorPosicaoX+largurajogador > cartaoX or cartaoX+cartaoLargura > jogadorPosicaoX and cartaoX+cartaoLargura < jogadorPosicaoX+largurajogador:
                 dead()
-            
-                
-                
+           
         # analise de colisão com o jogador
         mostraJogador(jogadorPosicaoX, jogadorPosicaoY)
         pygame.display.update()
