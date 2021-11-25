@@ -25,6 +25,8 @@ cartaovPosicaoY = altura*0.81
 apitoSound.set_volume(0.2)
 def mostraVermelho(x, y):
     gameDisplay.blit(juiz,(x,y))
+    pygame.display.update(juiz(x,y))
+    dead()
 def mostraJogador(x, y):
     gameDisplay.blit(jogador, (x, y))
 def mostracartao(x, y):
@@ -48,12 +50,7 @@ def dead():
     pygame.mixer.Sound.play(apitoSound)
     pygame.mixer.music.stop()
     escreverTela("Você foi expulso!")
-
-    
-    
-    
-   
-
+     
 def game():
     pygame.mixer.music.load("assets/futebol_som.mp3")
     pygame.mixer.music.set_volume(0.2)
@@ -69,10 +66,14 @@ def game():
     cartaoY = -200
     desvios = 0
     
-    
     while True:
         # pega as ações da tela. Ex.: fechar, click de uma tecla ou do mouse
         acoes = pygame.event.get()  # devolve uma lista de ações
+        keys = pygame.key.get_pressed()                  
+        if keys[pygame.K_LEFT] and jogadorPosicaoX > velocidade:              
+            jogadorPosicaoX -= velocidade          
+        if keys[pygame.K_RIGHT] and jogadorPosicaoX < 1400 - velocidade - jogadorPosicaoX:               
+            jogadorPosicaoX += velocidade
         # [ini] mapeando as ações
         for acao in acoes:
             if acao.type == pygame.QUIT:
@@ -108,9 +109,12 @@ def game():
         if jogadorPosicaoY < cartaoY + cartaoAltura:
             if jogadorPosicaoX < cartaoX and jogadorPosicaoX+largurajogador > cartaoX or cartaoX+cartaoLargura > jogadorPosicaoX and cartaoX+cartaoLargura < jogadorPosicaoX+largurajogador:
                 dead()
+            
+                
                 
         # analise de colisão com o jogador
         mostraJogador(jogadorPosicaoX, jogadorPosicaoY)
         pygame.display.update()
+        
         clock.tick(60)  # faz com que o while execute 60x por segundo
 game()
