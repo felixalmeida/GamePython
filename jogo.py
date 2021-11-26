@@ -1,6 +1,18 @@
+from os import X_OK
 import pygame
 import time
 import random
+
+
+nomeJogador= input(str("Digite seu nome: "))
+emailJogador = input(str("Digite seu e-mail: "))
+
+dadosJogador = "Nome: " + nomeJogador + "\n" + "e-mail: " + emailJogador 
+
+with open ("dadosJogador.txt", "a") as arquivo:
+    for valor in dadosJogador:
+        arquivo.write(str(valor))
+
 pygame.init()
 largura = 800
 altura = 600
